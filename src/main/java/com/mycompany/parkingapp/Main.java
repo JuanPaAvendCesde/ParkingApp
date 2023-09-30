@@ -3,9 +3,11 @@ package com.mycompany.parkingapp;
 
 import java.awt.event.ActionEvent;
 
+import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,8 +15,11 @@ import javax.swing.*;
  */
 public class Main {
 
-    private static final Vehiculo[] motos = new Vehiculo[100];
-    private static final Vehiculo[] carros = new Vehiculo[100];
+    private static final Vehiculo[] motosGuardadas = new Vehiculo[100];
+    private static final Vehiculo[] carrosGuardados = new Vehiculo[100];
+
+    private static final Vehiculo[] motosPagadas = new Vehiculo[100];
+    private static final Vehiculo[] carrosPagados = new Vehiculo[100];
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(Main::crearInterfaz);
@@ -40,15 +45,15 @@ public class Main {
         panelPrincipal.add(botonMensualidad);
         ventanaPrincipal.add(panelPrincipal);
         ventanaPrincipal.setVisible(true);
-        botonVerMotos.addActionListener((ActionEvent e) -> mostrarListaMotos());
-        botonVerCarros.addActionListener((ActionEvent e) -> mostrarListaCarros());
+        botonVerMotos.addActionListener((ActionEvent e) -> mostrarTablaMotos());
+        botonVerCarros.addActionListener((ActionEvent e) -> mostrarTablaCarros());
         panelPrincipal.add(botonVerMotos);
         panelPrincipal.add(botonVerCarros);
 
         ventanaPrincipal.setVisible(true);
 
         botonHora.addActionListener((var e) -> {
-            String[] tiposPosibles = {"Carro", "Motocicleta"};
+            String[] tiposPosibles = {"Carro", "Moto"};
             String tipoSeleccionado = (String) JOptionPane.showInputDialog(
                     ventanaPrincipal,
                     "Selecciona el tipo de vehículo:",
@@ -67,7 +72,7 @@ public class Main {
                 
                 if (placa != null && !placa.isEmpty()) {
                     
-                    if ("Motocicleta".equals(tipoSeleccionado)) {
+                    if ("Moto".equals(tipoSeleccionado)) {
                         int indiceMotos = obtenerIndiceDisponibleMotos();
                         
                         if (indiceMotos != -1) {
@@ -77,7 +82,7 @@ public class Main {
                             String horaEntrada = fechaYHoraLocalDateTime.format(formatoLocalDateTime);
                             
                             Vehiculo moto = new Vehiculo(placa, horaEntrada, null);
-                            motos[indiceMotos] = moto;
+                            motosGuardadas[indiceMotos] = moto;
                             JOptionPane.showMessageDialog(ventanaPrincipal,
                                     """
                                     Moto ingresada:
@@ -87,8 +92,8 @@ public class Main {
                                     JOptionPane.INFORMATION_MESSAGE);
                             System.out.println("Información del array motos:\n");
                             for (int i = 0; i <= indiceMotos; i++) {
-                                if (motos[i] != null) {
-                                    System.out.println("\nplaza[" + i + "]: " + motos[i]);
+                                if (motosGuardadas[i] != null) {
+                                    System.out.println("\nplaza[" + i + "]: " + motosGuardadas[i]);
                                 }
                             }
                         } else {
@@ -108,7 +113,7 @@ public class Main {
                             DateTimeFormatter formatoLocalDateTime = DateTimeFormatter.ofPattern("HH:mm:ss (dd-MM-yyyy)");
                             String horaEntrada = fechaYHoraLocalDateTime.format(formatoLocalDateTime);
                             Vehiculo carro = new Vehiculo(placa, horaEntrada, null);
-                            carros[indiceCarros] = carro;
+                            carrosGuardados[indiceCarros] = carro;
                             JOptionPane.showMessageDialog(ventanaPrincipal,
                                     """
                                     Carro ingresado:
@@ -118,8 +123,8 @@ public class Main {
                                     JOptionPane.INFORMATION_MESSAGE);
                             System.out.println("Información del array carros:");
                             for (int i = 0; i <= indiceCarros; i++) {
-                                if (carros[i] != null) {
-                                    System.out.println("\nplaza[" + i + "]: " + carros[i]);
+                                if (carrosGuardados[i] != null) {
+                                    System.out.println("\nplaza[" + i + "]: " + carrosGuardados[i]);
                                 }
                             }
                         } else {
@@ -142,8 +147,8 @@ public class Main {
     }
 
     private static int obtenerIndiceDisponibleMotos() {
-        for (int i = 0; i < motos.length; i++) {
-            if (motos[i] == null) {
+        for (int i = 0; i < motosGuardadas.length; i++) {
+            if (motosGuardadas[i] == null) {
                 return i;
             }
         }
@@ -151,35 +156,167 @@ public class Main {
     }
 
     private static int obtenerIndiceDisponibleCarros() {
-        for (int i = 0; i < carros.length; i++) {
-            if (carros[i] == null) {
+        for (int i = 0; i < carrosGuardados.length; i++) {
+            if (carrosGuardados[i] == null) {
                 return i;
             }
         }
         return -1;
     }
 
-    private static void mostrarListaMotos() {
-        StringBuilder listaMotos = new StringBuilder("Lista de Motos:\n");
-        for (int i = 0; i < motos.length; i++) {
-            if (motos[i] != null) {
-                listaMotos.append("\nPlaza[").append(i).append("]:\n");
-                listaMotos.append("Placa: ").append(motos[i].getPlaca()).append("\n");
-                listaMotos.append("Hora de Entrada: ").append(motos[i].getHoraEntrada()).append("\n");
+    private static void mostrarTablaMotos() {
+        // Datos de las motos
+        Object[][] data = new Object[motosGuardadas.length][3]; // Supongo que tienes un array de objetos Moto con métodos getPlaca(), getHoraEntrada(), etc.
+
+        for (int i = 0; i < motosGuardadas.length; i++) {
+            if (motosGuardadas[i] != null) {
+                data[i][0] = i; // Mostrar la posición del array en la columna "Plaza"
+                data[i][1] = motosGuardadas[i].getPlaca();
+                data[i][2] = motosGuardadas[i].getHoraEntrada();
             }
         }
-        JOptionPane.showMessageDialog(null, listaMotos.toString(), "Motos Guardadas", JOptionPane.INFORMATION_MESSAGE);
+
+        // Nombres de las columnas
+        String[] columnNames = {"Plaza", "Placa", "Hora de Entrada"};
+
+        // Crear el modelo de la tabla
+        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Todas las celdas no son editables
+            }
+        };
+
+        // Crear la tabla con el modelo
+        JTable table = new JTable(tableModel);
+
+        JButton btnEliminar = new JButton("Pagar");
+        btnEliminar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    // Obtener la información de la fila seleccionada
+                    int indexToDelete = (int) table.getValueAt(selectedRow, 0);
+                    Vehiculo motoPagada = motosGuardadas[indexToDelete];
+
+                    // Agregar la hora de salida
+                    LocalDateTime horaSalida = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss (dd-MM-yyyy)");
+                    String horaSalidaStr = horaSalida.format(formatter);
+                    motoPagada.setHoraSalida(horaSalidaStr);
+
+                    // Guardar la información en el array de carrosPagados
+                    motosPagadas[indexToDelete] = motoPagada;
+
+                    // Eliminar la fila del array original
+                    motosGuardadas[indexToDelete] = null;
+
+                    // Eliminar la fila de la tabla
+                    tableModel.removeRow(selectedRow);
+
+
+                    int indiceCarros = obtenerIndiceDisponibleCarros();
+                    System.out.println("Información del array motosPagadas:");
+                    for (int i = 0; i <= indiceCarros; i++) {
+                        if (motosPagadas[i] != null) {
+                            System.out.println("\nplaza[" + i + "]: " + motosPagadas[i]);
+                        }
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Selecciona una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // Mostrar la tabla en un JOptionPane
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.add(new JScrollPane(table));
+        panel.add(btnEliminar);
+        // Mostrar la tabla en un JOptionPane
+
+        JOptionPane.showMessageDialog(null, panel, "Motos Guardadas", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private static void mostrarListaCarros() {
-        StringBuilder listaCarros = new StringBuilder("Lista de Carros:\n");
-        for (int i = 0; i < carros.length; i++) {
-            if (carros[i] != null) {
-                listaCarros.append("\nPlaza[").append(i).append("]:\n");
-                listaCarros.append("Placa: ").append(carros[i].getPlaca()).append("\n");
-                listaCarros.append("Hora de Entrada: ").append(carros[i].getHoraEntrada()).append("\n");
+    private static void mostrarTablaCarros() {
+        // Datos de los carros
+        Object[][] data = new Object[carrosGuardados.length][3]; // Supongo que tienes un array de objetos Carro con métodos getPlaca(), getHoraEntrada(), etc.
+
+        for (int i = 0; i < carrosGuardados.length; i++) {
+            if (carrosGuardados[i] != null) {
+                data[i][0] = i; // Mostrar la posición del array en la columna "Plaza"
+                data[i][1] = carrosGuardados[i].getPlaca();
+                data[i][2] = carrosGuardados[i].getHoraEntrada();
             }
         }
-        JOptionPane.showMessageDialog(null, listaCarros.toString(), "Carros Guardados", JOptionPane.INFORMATION_MESSAGE);
+
+        // Nombres de las columnas
+        String[] columnNames = {"Plaza", "Placa", "Hora de Entrada"};
+
+        // Crear el modelo de la tabla
+        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Todas las celdas no son editables
+            }
+
+
+        };
+
+
+
+        // Crear la tabla con el modelo
+        JTable table = new JTable(tableModel);
+
+        JButton btnEliminar = new JButton("Pagar");
+        btnEliminar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    // Obtener la información de la fila seleccionada
+                    int indexToDelete = (int) table.getValueAt(selectedRow, 0);
+                    Vehiculo carroPagado = carrosGuardados[indexToDelete];
+
+                    // Agregar la hora de salida
+                    LocalDateTime horaSalida = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss (dd-MM-yyyy)");
+                    String horaSalidaStr = horaSalida.format(formatter);
+                    carroPagado.setHoraSalida(horaSalidaStr);
+
+                    // Guardar la información en el array de carrosPagados
+                    carrosPagados[indexToDelete] = carroPagado;
+
+                    // Eliminar la fila del array original
+                    carrosGuardados[indexToDelete] = null;
+
+                    // Eliminar la fila de la tabla
+                    tableModel.removeRow(selectedRow);
+
+
+                    int indiceCarros = obtenerIndiceDisponibleCarros();
+                    System.out.println("Información del array carrosPagados:");
+                    for (int i = 0; i <= indiceCarros; i++) {
+                        if (carrosPagados[i] != null) {
+                            System.out.println("\nplaza[" + i + "]: " + carrosPagados[i]);
+                        }
+                    }
+
+
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Selecciona una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // Mostrar la tabla en un JOptionPane
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.add(new JScrollPane(table));
+        panel.add(btnEliminar);
+        JOptionPane.showMessageDialog(null, panel, "Carros Guardados", JOptionPane.INFORMATION_MESSAGE);
     }
 }
