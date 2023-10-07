@@ -13,14 +13,15 @@ public class Vehiculo {
     private String horaEntrada;
     private String horaSalida;
 
-    // Constructor
-    public Vehiculo(String placa, String horaEntrada, String horaSalida) {
+    private int precio;
+
+    public Vehiculo(String placa, String horaEntrada, String horaSalida, int precio) {
         this.placa = placa;
         this.horaEntrada = horaEntrada;
         this.horaSalida = horaSalida;
+        this.precio = precio;
     }
 
-    // Getters y setters
     public String getPlaca() {
         return placa;
     }
@@ -45,9 +46,21 @@ public class Vehiculo {
         this.horaSalida = horaSalida;
     }
 
+    public int getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(int precio) {
+        this.precio = precio;
+    }
+
     @Override
     public String toString() {
-        return "Placa: " + placa + "\nHora de Entrada: " + horaEntrada + "\nHora de Salida: " + horaSalida;
+        return "Vehiculo{" +
+                "placa='" + placa + '\'' +
+                ", horaEntrada='" + horaEntrada + '\'' +
+                ", horaSalida='" + horaSalida + '\'' +
+                ", precio=" + precio +
+                '}';
     }
-    
 }
