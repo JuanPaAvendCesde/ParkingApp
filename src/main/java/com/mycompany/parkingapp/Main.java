@@ -146,9 +146,8 @@ public class Main {
             }
         });
 
-        botonVerMensualidades.addActionListener((ActionEvent e) -> {
-            mostrarTablaMensualidades();
-        });
+        botonVerMensualidades.addActionListener((ActionEvent e) ->
+            mostrarTablaMensualidades());
 
         botonHora.addActionListener((var e) -> {
             String[] tiposPosibles = {"Moto", "Carro"};
@@ -264,8 +263,8 @@ public class Main {
     }
 
     private static int obtenerIndiceMotosPagadas() {
-        for (int i = 0; i < motosGuardadas.length; i++) {
-            if (motosGuardadas[i] == null) {
+        for (int i = 0; i < motosPagadas.length; i++) {
+            if (motosPagadas[i] == null) {
                 return i;
             }
         }
@@ -273,8 +272,8 @@ public class Main {
     }
 
     private static int obtenerIndiceCarrosPagados() {
-        for (int i = 0; i < carrosGuardados.length; i++) {
-            if (carrosGuardados[i] == null) {
+        for (int i = 0; i < carrosPagados.length; i++) {
+            if (carrosPagados[i] == null) {
                 return i;
             }
         }
@@ -345,7 +344,7 @@ public class Main {
                 
             } else {
                 
-                JOptionPane.showMessageDialog(null, "Selecciona una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Selecciona una fila para pagar.", "Error al pagar", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -355,9 +354,8 @@ public class Main {
         panel.add(btnPagar);
 
         JButton btnMotosPagadas = new JButton("Ver Motos Pagadas");
-        btnMotosPagadas.addActionListener((ActionEvent e) -> {
-            mostrarTablaMotosPagadas();
-        });
+        btnMotosPagadas.addActionListener((ActionEvent e) ->
+            mostrarTablaMotosPagadas());
 
         panel.add(btnMotosPagadas);
 
@@ -502,9 +500,9 @@ public class Main {
         panel.add(btnPagar);
 
         JButton btnCarrosPagados = new JButton("Ver Carros Pagados");
-        btnCarrosPagados.addActionListener((ActionEvent e) -> {
-            mostrarTablaCarrosPagados();
-        });
+        btnCarrosPagados.addActionListener((ActionEvent e) ->
+            mostrarTablaCarrosPagados());
+
 
         panel.add(btnCarrosPagados);
         JOptionPane.showMessageDialog(null, panel, "Carros Guardados", JOptionPane.INFORMATION_MESSAGE);
